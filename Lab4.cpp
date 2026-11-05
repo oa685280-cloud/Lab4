@@ -15,159 +15,53 @@ bool IsParallel(const Line& L1,const  Line& L2) {
 }
 	int main()
 	{
-		int n;
-		std::cout << "Enter Number of Teachers : ";
-		std::cin >> n;
-		Teacher* Teachers = new Teacher[n];
-		for (int i = 0; i < n; i++) {
-			int id;
-			std::string name;
-			std::string lastc;
-			std::cout << "\nEnter Teacher #" << i + 1 << " ID : ";
-			std::cin >> id;
-			std::cout << "\nEnter Teacher #" << i + 1 << " Name : ";
-			std::cin >> name;
-			std::cout << "\nEnter Teacher #" << i + 1 << " Last Certificate : ";
-			std::cin >> lastc;
-			Teachers[i].setID(id);
-			Teachers[i].setLastCertificate(lastc);
-			Teachers[i].setName(name);
+		   Teacher t1(1, "Ahmed");
+        Teacher t2(2, "Mohamed");
+        Teacher t3(3, "Omar");
 
-		}
-		int m;
-		std::cout << "\nEnter Number of Courses : ";
-		std::cin >> m;
-		Course* Courses = new Course[m];
-		for (int i = 0; i < m; i++) {
-			int code;
-			std::string title;
-			std::string lastc;
-			std::cout << "\nEnter Course #" << i + 1 << " Code : ";
-			std::cin >> code;
-			std::cout << "\nEnter Course #" << i + 1 << " Title : ";
-			std::cin >> title;
-			Courses[i].setCode(code);
-			Courses[i].setTitle(title);
+        Course c1(101, "Physics");
+        Course c2(102, "Mathematics");
+        Course c3(103, "Programming");
 
-		}
-		bool loop = true;
-		while (loop) {
-			int choice;
-			std::cout << "\nWhat Do You Want To Do? [Add Course to Teacher(1) - Drop Course from Teacher(2) - Add Teacher to Course(3) - Drop Teacher from Course (4) - Print Info (5)- Exit(6) ] : ";
-			std::cin >> choice;
-			switch (choice) {
-			case 1: {
-				int c;
-				int nc;
-				std::cout << "\nWhich Course (Code)? ";
-				std::cin >> c;
-				for (int i = 0; i < m; i++)
-				{
-					if (Courses[i].getCode() == c) { nc = i; break; }
-				}
-				std::string name;
-				std::cout << "\nWhich Teacher (Name)? ";
-				std::cin >> name;
-				int nt;
-				for (int i = 0; i < n; i++)
-				{
-					if (Teachers[i].getName() == name) { nt = i; break; }
-				}
+        // Test 1: Assign a course to a teacher
+        std::cout << "\n--- Test 1 ---\n";
+        t1.AddCourse(&c1);
 
-				Teachers[nt].AddCourse(&Courses[nc]);
-				break;
-			}
-			case 2: {
-				std::string name;
-				std::cout << "\nWhich Teacher (Name)? ";
-				std::cin >> name;
-				int nt;
-				for (int i = 0; i < n; i++)
-				{
-					if (Teachers[i].getName() == name) { nt = i; break; }
-				}
+        // Test 2: Assign a teacher to an occupied course
+        std::cout << "\n--- Test 2 ---\n";
+        c1.AddTeacher(&t2);
 
-				Teachers[nt].DropCourse();
-				break;
-			}
-			case 3:
-			{
-				std::string name;
-				std::cout << "\nWhich Teacher (Name)? ";
-				std::cin >> name;
-				int nt;
-				for (int i = 0; i < n; i++)
-				{
-					if (Teachers[i].getName() == name) { nt = i; break; }
-				}
+        // Test 3: Assign an occupied teacher to another course
+        std::cout << "\n--- Test 3 ---\n";
+        t1.AddCourse(&c2);
 
-				int c;
-				int nc;
-				std::cout << "\nWhich Course (Code)? ";
-				std::cin >> c;
-				for (int i = 0; i < m; i++)
-				{
-					if (Courses[i].getCode() == c) { nc = i; break; }
-				}
-				Courses[nc].AddTeacher(&Teachers[nt]);
-				break;
-			}
-			case 4: {
+        // Test 4: Assign an available teacher and course
+        std::cout << "\n--- Test 4 ---\n";
+        t2.AddCourse(&c2);
 
-				int c;
-				int nc;
-				std::cout << "\nWhich Course (Code)? ";
-				std::cin >> c;
-				for (int i = 0; i < m; i++)
-				{
-					if (Courses[i].getCode() == c) { nc = i; break; }
-				}
-				Courses[nc].DropTeacher();
-				break;
-			}
-			case 5: {
-				bool ch = true;
-				while (ch) {
-					char ans;
-					std::cout << "\nCourse or Teacher? (C / T)";
-					std::cin >> ans;
-					if (ans == 'c' || ans == 'C') {
-						int c;
-						int nc;
-						std::cout << "\nWhich Course (Code)? ";
-						std::cin >> c;
-						for (int i = 0; i < n; i++)
-						{
-							if (Courses[i].getCode() == c) { nc = i; break; }
-						}
-						Courses[nc].PrintInfo();
-						ch = false;
-					}
-					else if (ans == 't' || ans == 'T') {
+        // Test 5: Try assigning nullptr
+        std::cout << "\n--- Test 5 ---\n";
+        t3.AddCourse(nullptr);
 
-						std::string name;
-						std::cout << "\nWhich Teacher (Name)? ";
-						std::cin >> name;
-						int nt;
-						for (int i = 0; i < n; i++)
-						{
-							if (Teachers[i].getName() == name) { nt = i; break; }
-						}
-						Teachers[nt].PrintInfo();
-						ch = false;
+        // Test 6: Remove relationship from Course side
+        std::cout << "\n--- Test 6 ---\n";
+        c1.DropTeacher();
 
+        // Test 7: Reuse previously occupied teacher
+        std::cout << "\n--- Test 7 ---\n";
+        t1.AddCourse(&c3);
 
-					}
-					else std::cout << "\nEnter Either C or T";
+        // Test 8: Reuse previously occupied course
+        std::cout << "\n--- Test 8 ---\n";
+        t3.AddCourse(&c1);
 
-				}
-				break;
-			}
-			case 6: {
-				loop = false; break;
-			}
-			default: std::cout << "Enter a Valid Number!";
-			}
-		}
-		return 0;
+        // Test 9: Remove relationship from Teacher side
+        std::cout << "\n--- Test 9 ---\n";
+        t2.DropCourse();
+
+        // Test 10: Reuse both objects
+        std::cout << "\n--- Test 10 ---\n";
+        t2.AddCourse(&c2);
+
+	return 0;
 	}
