@@ -42,18 +42,24 @@ public:
 	void Display() const ;
 
 };
+class Course;
+class Teacher;
+
 class Course {
 private:
 	int code;
 	std::string title;
 	Teacher* tptr;
+	
 public:
 	
-	Course(int, std::string);
+	Course(int=0, std::string=" ");
 	void setCode(int );
 	void setTitle(std::string);
-	void AddTeacher(Teacher*) {};
-	void DropTeacher() {};
+	void AddTeacher(Teacher*) ;
+	void AddTeacherex(Teacher* tp);
+	void DropTeacher() ;
+	void DropTeacherex();
 	int getCode()const;
 	std::string getTitle() const;
 	Teacher* getTeacher() const;
@@ -66,13 +72,17 @@ private:
 	std::string Name;
 	std::string LastCertificate;
 	Course* cptr;
+	
 public:
-	Teacher(int, std::string, std::string);
+	
+	Teacher(int =0, std::string=" ", std::string=" ");
 	void setID(int);
 	void setName(std::string);
 	void setLastCertificate(std::string);
-	void AddCourse(Course*) {};
-	void DropCourse() {};
+	void AddCourse(Course*) ;
+	void AddCourseex(Course* tp);
+	void DropCourse() ;
+	void DropCourseex();
 	Course* getCourse() const;
 	int getID()const;
 	std::string getName() const;

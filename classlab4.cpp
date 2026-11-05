@@ -1,5 +1,6 @@
 #include <iostream>
 #include "HeadeLab4r.h"
+
 Point::Point(double _x , double _y) : x(_x), y(_y) {};
 void Point::Display() const{
 	std::cout << "(" << x << "," << y << ")";
@@ -102,45 +103,92 @@ void Polygon::Display() const {
 
 };
 
-Course::Course(int a=0, std::string b=" ") : code(a),title(b) {}
-void Course::setCode(int c) { code = c; }
+Course::Course(int a, std::string b) : code(a),title(b) {} //Constructor
+
+void Course::setCode(int c) { code = c; }   
+
 void Course::setTitle(std::string d) { title = d; }
+
 int Course::getCode() const { return code; }
+
 std::string Course::getTitle() const{ return title; }
-void Course::AddTeacher(Teacher* tp) {
-	if (tptr == nullptr && tp != nullptr && !(tp->getCourse())) {
+
+void Course::AddTeacher(Teacher* tp) { // Add a Teacher to Course -Checks if course is already attached or Teacher already has a Course
+	if (tptr == nullptr && tp != nullptr && (tp != nullptr ? tp->getCourse() == nullptr : false)) {
+		tptr = tp;
+		tptr->AddCourseex(this);
+	}
+	else if (tptr != nullptr) std::cout << "Only One Teacher Per Course" << std::endl;
+	else if (tp->getCourse()!=nullptr)std::cout << "Course already Has a Teacher"<<std::endl;
+	else std::cout << "No Teacher Detected" << std::endl;
+
+};
+void Course::AddTeacherex(Teacher* tp) { // Had to make it to prevent infinte loops I believe There is a better implementation
+	if (tptr == nullptr && tp != nullptr ) {
 		tptr = tp;
 		tptr->AddCourse(this);
 	}
 	else if (tptr != nullptr) std::cout << "Only One Teacher Per Course" << std::endl;
-	else if ((tp->getCourse()))std::cout << "Course already Have a Teacher"<<std::endl;
+	
 	else std::cout << "No Teacher Detected" << std::endl;
 
 };
+
 void Course::DropTeacher() {
-	if (tptr) {
-		tptr->DropCourse();
+	if (tptr!=nullptr && tptr->getCourse()!=nullptr) {
+		tptr->DropCourseex();
 		tptr = nullptr;
 	}
 };
-Teacher* Course::getTeacher() const { return tptr; }
+
+void Course::DropTeacherex() {
+	//Had to make it to prevent infinte loops I believe There is a better implementation
+	if (tptr != nullptr ) {
+		
+		tptr = nullptr;
+	}
+};
+Teacher* Course::getTeacher() const { if (tptr != nullptr) return tptr; else return nullptr; }
 
 void Course::PrintInfo()const {
 	std::cout << "Course Title : " << title << std::endl;
 	std::cout << "Course Code : " << code << std::endl;
+	if (tptr)std::cout << "Teaches Course : " << tptr->getName() << std::endl;
+	else std::cout << "Course has no teacher " << std::endl;
+
 
 };
 
-Teacher::Teacher(int a = 0, std::string b = " ", std::string f = " ") : 
+Teacher::Teacher(int a , std::string b , std::string f ) : 
 	ID(a), Name(b),LastCertificate(f),cptr(nullptr) {}
+
 void Teacher::setID(int c) { ID = c; }
+
 void Teacher::setName(std::string d) { Name = d; }
+
 void Teacher::setLastCertificate(std::string d) { LastCertificate = d; }
+
 int Teacher::getID() const { return ID; }
+
 std::string Teacher::getName() const { return Name; }
+
 std::string Teacher::getLastCertificate() const { return LastCertificate; }
+
 void Teacher::AddCourse(Course* cp) {
-	if (cptr == nullptr && cp != nullptr && !(cp->getTeacher())) {
+	if (cptr == nullptr && cp != nullptr && ( cp!=nullptr? cp->getTeacher()==nullptr :false) ){
+		cptr = cp;
+		cptr->AddTeacherex(this);
+	}
+	else if (cptr != nullptr) std::cout << "Only One Course Per Teacher" << std::endl;
+	else if (cp!=nullptr &&cp->getTeacher()!=nullptr)std::cout << "Course already Has a Teacher" << std::endl;
+	else std::cout << "No Course Detected" << std::endl;
+
+};
+
+void Teacher::AddCourseex(Course* cp) {
+
+	//Had to make it to prevent infinte loops I believe There is a better implementation
+	if (cptr == nullptr && cp != nullptr ) {
 		cptr = cp;
 		cptr->AddTeacher(this);
 	}
@@ -148,17 +196,27 @@ void Teacher::AddCourse(Course* cp) {
 	else std::cout << "No Course Detected" << std::endl;
 
 };
+
 void Teacher::DropCourse() {
-	if (cptr) {
-		cptr->DropTeacher();
+	if (cptr!=nullptr && cptr->getTeacher()!=nullptr) {
+		cptr->DropTeacherex();
+		cptr = nullptr;
+	}
+};
+
+void Teacher::DropCourseex() {
+	//Had to make it to prevent infinte loops I believe There is a better implementation
+	if (cptr != nullptr ) {
 		cptr = nullptr;
 	}
 };
 Course* Teacher::getCourse() const { return cptr; }
+
 void Teacher::PrintInfo()const {
 	std::cout << "Teacher's Name : " << Name << std::endl;
 	std::cout << "Teacher's ID : " << ID << std::endl;
 	std::cout << "Teacher's LastCertificate : " << LastCertificate << std::endl;
-	if (cptr)std::cout << "Teaches Course : " << cptr->getTitle();
+	if (cptr)std::cout << "Teaches Course : " << cptr->getTitle()<<std::endl;
+	else std::cout << "Teacher doesn't Have a Course" << std::endl;
 };
 
